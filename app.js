@@ -1,41 +1,36 @@
-function managerFinder(hierarchy) {
-  let empHierarchy = {};
+function managerChecker(employees) {
+  let hierarchy = {};
 
-  hierarchy.forEach((employee) => {
+  for (let employee of employees) {
     if (employee.manager) {
-      if (!empHierarchy[employee.manager]) {
-        empHierarchy[employee.manager] = [employee.id];
-      } else {
-        empHierarchy[employee.manager].push(employee.id);
+      if (!hierarchy[employee.manager]) {
+        hierarchy[employee.manager] = []; // Initialize an empty array for the manager
       }
+      hierarchy[employee.manager].push(employee.id); // Add employee to the manager's list
     }
-  });
+  }
 
-  // this is some kind of recursive function I know it
   function getReports(manager) {
     let totalReports = [];
 
-    if (empHierarchy[manager]) {
-      for (const id of empHierarchy[manager]) {
+    if (hierarchy[manager]) {
+      for (let id of hierarchy[manager]) {
         totalReports.push(id);
         totalReports = totalReports.concat(getReports(id));
       }
     }
     return totalReports;
   }
-
   let output = {};
-  for (let manager in empHierarchy) {
+  for (let manager in hierarchy) {
     output[manager] = getReports(manager);
   }
-
   console.log(output);
 }
 
-managerFinder([
+managerChecker([
   { id: "1", manager: "2" },
   { id: "2", manager: "3" },
   { id: "3" },
-  { id: "4", manager: "2" },
-  { id: "5", manager: "4" },
+  { id: "4", manager: "3" },
 ]);
